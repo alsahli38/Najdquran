@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>نجد قرآن — تلاوات متكاملة</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css ">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- بنر متحرك -->
+  <div class="marquee-banner">
+    <div class="marquee-content">
+      اللهم اجعلها شفيعه لي ولكم وللجميع
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-quran"></i> نجد قرآن</h1>
+      <p class="subtitle">رفيقك اليومي لتلاوة القرآن الكريم، بأصوات أشهر القرّاء وتجربة روحانية متكاملة</p>
+    </header>
+
+    <div class="filter">
+      <input id="search" type="search" placeholder="'ابحث  بإسم القارئ" />
+      <button id="loadBtn" class="btn"><i class="research"></i> بحث</button>
+      <div class="filter-options">
+        <label>
+          <input id="onlyAll" type="checkbox" />
+          إظهار فقط المصاحف التي تحوي جميع الـ114 سورة
+        </label>
+      </div>
+    </div>
+
+    <div id="status">لم يتم تحميل البيانات بعد.</div>
+    <div id="list"></div>
+
+    <div class="share-box">
+      <p>شارك الأجر بمشاركة التطبيق</p>
+      <button id="shareBtn" class="btn">مشاركة</button>
+    </div>
+
+    <footer>
+      <div class="dua">
+      اللهم اجعل هذا العمل صدقة جارية عني وعن عائلتي وأهلي وأهل عائلتي وعن موتانا وموتى المسلمين وعن كل من ساهم وشارك في التطبيق
+      </div>
+      <div class="copyright">جميع الحقوق محفوظة © <strong>NajdQuran</strong></div>
+    </footer>
+  </div>
+
+  <script>
+    // Helpers
+    const pad3 = n => String(n).padStart(3, '0');
+    const apiBase = ' https://www.mp3quran.net/api/v3/reciters?language=ar';
+
+    // قائمة أسماء السور العربية
+    const surahNames = [
+      "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
+      "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
+      "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
+      "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+      "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
+      "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
+      "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
+      "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
+      "التكوير", "الإنفطار", "المطففين", "الإنشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
+      "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
+      "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
+      "المسد", "الإخلاص", "الفلق", "الناس"
+    ];
+
+    async function fetchReciters() {
+      document.getElementById('status').textContent = 'جاري جلب قائمة المشايخ من API...';
+      try {
+        const res = await fetch(apiBase);
+        if (!res.ok) throw new Error('فشل الاتصال بالـ API: ' + res.status);
+        const data = await res.json();
+        return data.reciters || [];
+      } catch (err) {
+        console.error(err);
+        document.getElementById('status').textContent = 'حدث خطأ أثناء جلب البيانات. افتح الكونسول للمزيد.';
+        throw err;
+      }
+    }
+
+    function createReciterCard(reciter) {
+      const wrap = document.createElement('div');
+      wrap.className = 'reciter';
+
+      const head = document.createElement('div');
+      head.className = 'reciter-head';
+
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'reciter-info';
+      
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'reciter-name';
+      nameDiv.textContent = reciter.name;
+      
+      const metaDiv = document.createElement('div');
+      metaDiv.className = 'reciter-meta';
+      metaDiv.innerHTML = `
+        <span><i class="fas fa-hashtag"></i> الرمز: ${reciter.letter || '-'}</span>
+        <span><i class="fas fa-id-badge"></i> ID: ${reciter.id}</span>
+      `;
+      
+      infoDiv.appendChild(nameDiv);
+      infoDiv.appendChild(metaDiv);
+
+      const right = document.createElement('div');
+      right.className = 'controls';
+      const toggleBtn = document.createElement('button');
+      toggleBtn.className = 'btn flat';
+      toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> فتح/إغلاق';
+      toggleBtn.addEventListener('click', () => {
+        const d = wrap.querySelector('details');
+        if (d) d.open = !d.open;
+      });
+
+      right.appendChild(toggleBtn);
+      head.appendChild(infoDiv);
+      head.appendChild(right);
+      wrap.appendChild(head);
+
+      const det = document.createElement('details');
+      const summary = document.createElement('summary');
+      summary.innerHTML = '<i class="fas fa-book-quran"></i> المصاحف المتاحة (اضغط للتوسيع)';
+      det.appendChild(summary);
+
+      reciter.moshaf.forEach((m) => {
+        const box = document.createElement('div');
+        box.className = 'moshaf';
+
+        const title = document.createElement('div');
+        title.className = 'moshaf-title';
+        title.innerHTML = `<i class="fas fa-file-audio"></i> ${m.name} — (الكل: ${m.surah_total || '-'})`;
+        box.appendChild(title);
+
+        const info = document.createElement('div');
+        info.className = 'moshaf-info';
+        info.innerHTML = `<i class="fas fa-server"></i> المجلد/السيرفر: ${m.server || '—'}`;
+        box.appendChild(info);
+
+        let available = [];
+        if (m.surah_list && typeof m.surah_list === 'string' && m.surah_list.trim()) {
+          available = m.surah_list.split(',').map(x => parseInt(x,10)).filter(n => !isNaN(n));
+        } else if (m.surah_total) {
+          available = Array.from({length: m.surah_total}, (_,i) => i+1);
+        } else {
+          available = Array.from({length:114}, (_,i) => i+1);
+        }
+
+        const linksDiv = document.createElement('div');
+        linksDiv.className = 'links';
+
+        available.forEach(num => {
+          const fileName = pad3(num) + '.mp3';
+          const base = (m.server || '').replace(/\/+$/,'') + '/';
+          const url = base + fileName;
+
+          const a = document.createElement('a');
+          a.className = 'link';
+          a.href = url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.title = `تشغيل سورة ${surahNames[num - 1] || 'مجهولة'}`;
+          a.innerHTML = `<i class="fas fa-play-circle"></i> ${surahNames[num - 1] || pad3(num)}`;
+
+          a.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            playAudio(url, `${reciter.name} — ${surahNames[num - 1] || 'سورة ' + num}`, num, reciter, m);
+          });
+
+          linksDiv.appendChild(a);
+        });
+
+        box.appendChild(linksDiv);
+        det.appendChild(box);
+      });
+
+      wrap.appendChild(det);
+      return wrap;
+    }
+
+    let currentAudioEl = null;
+    let currentSurahIndex = null;
+    let currentReciter = null;
+    let currentMoshaf = null;
+
+    function ensurePlayerArea() {
+      let area = document.getElementById('playerArea');
+      if (!area) {
+        area = document.createElement('div');
+        area.id = 'playerArea';
+        document.querySelector('.container').insertBefore(area, document.querySelector('footer'));
+      }
+      return area;
+    }
+
+    function playAudio(url, label, surahNum, reciter, moshaf) {
+      const area = ensurePlayerArea();
+      area.innerHTML = `<div class="small"><i class="fas fa-volume-up"></i> تشغيل: ${escapeHtml(label)}</div>`;
+      
+      if (currentAudioEl) {
+        currentAudioEl.pause();
+        currentAudioEl.remove();
+      }
+
+      currentSurahIndex = surahNum;
+      currentReciter = reciter;
+      currentMoshaf = moshaf;
+
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.src = url;
+      audio.autoplay = true;
+      audio.onended = () => {
+        // تشغيل السورة التالية تلقائيًا
+        const nextSurah = surahNum + 1;
+        if (nextSurah <= 114) {
+          const nextFileName = pad3(nextSurah) + '.mp3';
+          const base = (moshaf.server || '').replace(/\/+$/,'') + '/';
+          const nextUrl = base + nextFileName;
+          const nextLabel = `${reciter.name} — ${surahNames[nextSurah - 1] || 'سورة ' + nextSurah}`;
+          playAudio(nextUrl, nextLabel, nextSurah, reciter, moshaf);
+        }
+      };
+      
+      area.appendChild(audio);
+      currentAudioEl = audio;
+    }
+
+    function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+    document.getElementById('loadBtn').addEventListener('click', async () => {
+      const listEl = document.getElementById('list');
+      listEl.innerHTML = '';
+      try {
+        const reciters = await fetchReciters();
+        document.getElementById('status').textContent = `تم جلب ${reciters.length} قارئ. عرض النتائج...`;
+        window._mp3q_reciters = reciters;
+        renderReciters(reciters);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    function renderReciters(all) {
+      const listEl = document.getElementById('list');
+      listEl.innerHTML = '';
+      const q = (document.getElementById('search').value || '').trim().toLowerCase();
+      const onlyAll = document.getElementById('onlyAll').checked;
+
+      const filtered = all.filter(r => {
+        if (q) {
+          return r.name.toLowerCase().includes(q) || String(r.id) === q;
+        }
+        return true;
+      }).filter(r => {
+        if (!onlyAll) return true;
+        return (r.moshaf || []).some(m => Number(m.surah_total) === 114);
+      });
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><br>لا توجد نتائج مطابقة للفلتر.</div>';
+        return;
+      }
+
+      filtered.forEach(r => {
+        const card = createReciterCard(r);
+        listEl.appendChild(card);
+      });
+    }
+
+    document.getElementById('search').addEventListener('input', () => {
+      if (window._mp3q_reciters) renderReciters(window._mp3q_reciters);
+    });
+    document.getElementById('onlyAll').addEventListener('change', () => {
+      if (window._mp3q_reciters) renderReciters(window._mp3q_reciters);
+    });
+
+    document.getElementById('shareBtn').addEventListener('click', () => {
+      const appLink = 'https://www.mediafire.com/file/puljrdbo138qk8m/NajdQuran.apk/file';
+      const text = encodeURIComponent('انصحكم بهذا التطبيق المبارك: نجد قرآن — تلاوات متكاملة\n\n' + appLink);
+      const whatsappUrl = `https://wa.me/?text=${text}`;
+      window.open(whatsappUrl, '_blank');
+    });
+  </script>
+
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #1e3a8a;
+      --secondary: #f0f9ff;
+      --accent: #0ea5e9;
+      --light: #f8fafc;
+      --dark: #0f172a;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+      --border: #cbd5e1;
+      --success: #10b981;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 16px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      color: var(--dark);
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .marquee-banner {
+      background: linear-gradient(90deg, #1e3a8a, #0ea5e9, #1e3a8a);
+      color: white;
+      padding: 12px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .marquee-content {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 25s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 25px auto;
+      padding: 0 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 25px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 12px;
+      color: var(--primary-dark);
+      font-weight: 800;
+      position: relative;
+      display: inline-block;
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--gray);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 25px;
+      background: white;
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    #search {
+      flex: 1;
+      min-width: 280px;
+      padding: 14px 20px;
+      border-radius: 50px;
+      border: 2px solid var(--border);
+      font-size: 1rem;
+      transition: var(--transition);
+      outline: none;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    #search:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 50px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn.flat {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 10px 20px;
+    }
+
+    .btn.flat:hover {
+      background: rgba(30, 58, 138, 0.05);
+      transform: none;
+      box-shadow: none;
+    }
+
+    .filter-options {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    #onlyAll {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+
+    #status {
+      text-align: center;
+      padding: 15px;
+      background: white;
+      border-radius: var(--radius);
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    #list {
+      display: grid;
+      gap: 25px;
+    }
+
+    .reciter {
+      background: white;
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid var(--border);
+    }
+
+    .reciter:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent);
+    }
+
+    .reciter-head {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .reciter-info {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .reciter-name {
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--primary-dark);
+      margin-bottom: 5px;
+    }
+
+    .reciter-meta {
+      display: flex;
+      gap: 15px;
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .reciter-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    details {
+      margin-top: 20px;
+      border-top: 1px solid var(--light-gray);
+      padding-top: 20px;
+    }
+
+    summary {
+      font-weight: 700;
+      color: var(--primary);
+      cursor: pointer;
+      list-style: none;
+      padding: 8px 0;
+      font-size: 1.1rem;
+      position: relative;
+    }
+
+    summary::after {
+      content: "▼";
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      transform: translateY(-50%) rotate(0deg);
+      transition: transform 0.3s;
+      color: var(--accent);
+      font-size: 0.8rem;
+    }
+
+    details[open] summary::after {
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    .moshaf {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--secondary);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .moshaf-title {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .moshaf-title i {
+      color: var(--accent);
+    }
+
+    .moshaf-info {
+      display: none;
+    }
+
+    .links {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .link {
+      padding: 12px 8px;
+      border-radius: 12px;
+      background: white;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 600;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 70px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .link:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+
+    .link i {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    #playerArea {
+      background: white;
+      padding: 25px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-top: 25px;
+      margin-bottom: 25px;
+      border: 1px solid var(--border);
+    }
+
+    #playerArea .small {
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    audio {
+      width: 100%;
+      height: 50px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      color: var(--gray);
+      font-size: 1.1rem;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 25px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      color: var(--gray);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .dua {
+      font-style: italic;
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    .copyright {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .share-box {
+      background: white;
+      border-radius: var(--radius);
+      padding: 25px;
+      text-align: center;
+      margin: 30px 0;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .share-box p {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+      .reciter-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .controls {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      
+      .filter {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .filter-options {
+        margin-left: 0;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+      
+      h1 {
+        font-size: 1.9rem;
+      }
+      
+      .links {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      }
+      
+      .marquee-banner {
+        font-size: 1rem;
+        padding: 10px 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .reciter {
+        padding: 20px;
+      }
+      
+      .links {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      }
+      
+      .marquee-content {
+        animation-duration: 35s;
+      }
+    }
+  </style>
+</body>
+</html>
