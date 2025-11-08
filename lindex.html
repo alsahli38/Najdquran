@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>نجد قرآن — تلاوات متكاملة</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css ">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- بنر متحرك -->
+  <div class="marquee-banner">
+    <div class="marquee-content">
+      اللهم اجعلها شفيعه لي ولكم وللجميع
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-quran"></i> نجد قرآن</h1>
+      <p class="subtitle">رفيقك اليومي لتلاوة القرآن الكريم، بأصوات أشهر القرّاء وتجربة روحانية متكاملة</p>
+    </header>
+
+    <div class="filter">
+      <input id="search" type="search" placeholder="'ابحث  بإسم القارئ" />
+      <button id="loadBtn" class="btn"><i class="research"></i> بحث</button>
+      <div class="filter-options">
+        <label>
+          <input id="onlyAll" type="checkbox" />
+          إظهار فقط المصاحف التي تحوي جميع الـ114 سورة
+        </label>
+      </div>
+    </div>
+
+    <div id="status">لم يتم تحميل البيانات بعد.</div>
+    <div id="list"></div>
+
+    <div class="share-box">
+      <p>شارك الأجر بمشاركة التطبيق</p>
+      <button id="shareBtn" class="btn">مشاركة</button>
+    </div>
+
+    <footer>
+      <div class="dua">
+      اللهم اجعل هذا العمل صدقة جارية عني وعن عائلتي وأهلي وأهل عائلتي وعن موتانا وموتى المسلمين وعن كل من ساهم وشارك في التطبيق
+      </div>
+      <div class="copyright">جميع الحقوق محفوظة © <strong>NajdQuran</strong></div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
