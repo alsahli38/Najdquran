@@ -1,54 +1,396 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>نجد قرآن — تلاوات متكاملة</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css ">
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Najd Quran - نجـد للقرآن الكريم</title>
+    <meta name="description" content="Najd Quran - تطبيق القرآن الكريم الاحترافي بتصاميم إسلامية فاخرة">
+    <meta name="theme-color" content="#0d3320">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- بنر متحرك -->
-  <div class="marquee-banner">
-    <div class="marquee-content">
-      اللهم اجعلها شفيعه لي ولكم وللجميع
-    </div>
-  </div>
 
-  <div class="container">
-    <header>
-      <h1><i class="fas fa-quran"></i> نجد قرآن</h1>
-      <p class="subtitle">رفيقك اليومي لتلاوة القرآن الكريم، بأصوات أشهر القرّاء وتجربة روحانية متكاملة</p>
+<!-- Islamic Background Pattern Layer -->
+<div class="islamic-bg-layer pattern-arabesque" id="islamicBg"></div>
+
+<div class="loading" id="loadScreen">
+    <div class="loading-pattern"></div>
+    <div class="loading-icon"><i class="fas fa-quran"></i></div>
+    <h2>نجـد للقرآن</h2>
+    <p>Najd Quran</p>
+    <div class="load-bar"><span></span></div>
+</div>
+
+<div class="app" id="app">
+    <header class="hdr">
+        <div class="hdr-ornament"></div>
+        <div class="hdr-inner">
+            <div class="logo">
+                <div class="logo-box"><i class="fas fa-quran"></i></div>
+                <div><h1>نجـد</h1><span>Najd Quran</span></div>
+            </div>
+            <div class="hdr-btns">
+                <button class="hdr-btn" id="themeBtn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+                <button class="hdr-btn" onclick="go('settings')"><i class="fas fa-cog"></i></button>
+            </div>
+        </div>
     </header>
 
-    <div class="filter">
-      <input id="search" type="search" placeholder="'ابحث  بإسم القارئ" />
-      <button id="loadBtn" class="btn"><i class="research"></i> بحث</button>
-      <div class="filter-options">
-        <label>
-          <input id="onlyAll" type="checkbox" />
-          إظهار فقط المصاحف التي تحوي جميع الـ114 سورة
-        </label>
-      </div>
+    <div class="tabs" id="tabs">
+        <button class="tab on" data-p="home" onclick="go('home')">الرئيسية</button>
+        <button class="tab" data-p="quran" onclick="go('quran')">المصحف</button>
+        <button class="tab" data-p="reciters" onclick="go('reciters')">القرّاء</button>
+        <button class="tab" data-p="favorites" onclick="go('favorites')">المفضلة</button>
+        <button class="tab" data-p="prayer" onclick="go('prayer')">الصلاة</button>
+        <button class="tab" data-p="adhkar" onclick="go('adhkar')">الأذكار</button>
+        <button class="tab" data-p="dua" onclick="go('dua')">الأدعية</button>
+        <button class="tab" data-p="khatma" onclick="go('khatma')">الختمة</button>
+        <button class="tab" data-p="settings" onclick="go('settings')">الإعدادات</button>    </div>
+
+    <!-- HOME -->
+    <div class="page on" id="pg-home">
+        <div class="banner">
+            <div class="banner-pattern-overlay"></div>
+            <div class="banner-frame"></div>
+            <h2>بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</h2>
+            <p>استمع إلى القرآن الكريم بأصوات أشهر القرّاء</p>
+            <div class="banner-verse">
+                <p>وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</p>
+                <span>سورة المزمل - آية 4</span>
+            </div>
+        </div>
+        <div class="qa-grid">
+            <div class="qa" onclick="go('quran')"><div class="qa-icon" style="background:rgba(15,118,110,.08);color:#0f766e;"><i class="fas fa-book-quran"></i></div><span>المصحف</span></div>
+            <div class="qa" onclick="go('reciters')"><div class="qa-icon" style="background:rgba(13,92,58,.08);color:var(--primary);"><i class="fas fa-microphone-alt"></i></div><span>القرّاء</span></div>
+            <div class="qa" onclick="go('prayer')"><div class="qa-icon" style="background:rgba(212,168,67,.08);color:var(--gold);"><i class="fas fa-mosque"></i></div><span>الصلاة</span></div>
+            <div class="qa" onclick="go('adhkar')"><div class="qa-icon" style="background:rgba(52,152,219,.08);color:#3498db;"><i class="fas fa-hands-praying"></i></div><span>الأذكار</span></div>
+            <div class="qa" onclick="go('dua')"><div class="qa-icon" style="background:rgba(155,89,182,.08);color:#9b59b6;"><i class="fas fa-book-open"></i></div><span>الأدعية</span></div>
+            <div class="qa" onclick="go('khatma')"><div class="qa-icon" style="background:rgba(26,188,156,.08);color:#1abc9c;"><i class="fas fa-book-quran"></i></div><span>الختمة</span></div>
+            <div class="qa" onclick="go('favorites')"><div class="qa-icon" style="background:rgba(231,76,60,.08);color:#e74c3c;"><i class="fas fa-heart"></i></div><span>المفضلة</span></div>
+            <div class="qa" onclick="go('settings')"><div class="qa-icon" style="background:rgba(149,165,166,.08);color:#7f8c8d;"><i class="fas fa-gear"></i></div><span>الإعدادات</span></div>
+        </div>
+        <div class="s-wrap">
+            <div class="s-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="ابحث عن قارئ..." id="homeSearch" oninput="doSearch(this.value)">
+                <button class="s-go" onclick="doSearch(document.getElementById('homeSearch').value)">بحث</button>
+            </div>
+        </div>
+        <div class="sec search-res" id="searchSec">
+            <div class="sec-h"><div class="sec-t"><div class="sec-i"><i class="fas fa-search"></i></div><h3>نتائج البحث</h3></div></div>
+            <div class="r-list" id="searchList"></div>
+        </div>
+        <div class="sec" id="famousSec">
+            <div class="sec-h">
+                <div class="sec-t"><div class="sec-i"><i class="fas fa-star"></i></div><h3>أشهر القرّاء</h3></div>
+                <span class="sec-m" onclick="go('reciters')">عرض الكل <i class="fas fa-chevron-left"></i></span>
+            </div>
+            <div class="r-scroll" id="famousR"></div>
+        </div>
+        <div class="sec" id="recentSec">
+            <div class="sec-h"><div class="sec-t"><div class="sec-i"><i class="fas fa-clock"></i></div><h3>آخر الإضافات</h3></div></div>
+            <div class="r-scroll" id="recentR"></div>
+        </div>
+        <div class="sec" id="exploreSec">
+            <div class="sec-h"><div class="sec-t"><div class="sec-i"><i class="fas fa-compass"></i></div><h3>استكشف القرّاء</h3></div></div>
+            <div class="r-scroll" id="exploreR"></div>
+        </div>    </div>
+
+    <!-- QURAN -->
+    <div class="page" id="pg-quran">
+        <div class="quran-section">
+            <div class="quran-header">
+                <div class="quran-header-pattern"></div>
+                <h2>📖 المصحف الإلكتروني</h2>
+                <p>تصفح القرآن الكريم كاملاً</p>
+            </div>
+            <div class="quran-frame-wrap">
+                <div class="quran-loader-overlay" id="quranLoader">
+                    <div class="spin"></div>
+                    <span>جاري تحميل المصحف الإلكتروني...</span>
+                    <button class="quran-retry" onclick="reloadQuran()">إعادة المحاولة</button>
+                </div>
+                <iframe id="quranFrame" src="" loading="eager" allowfullscreen allow="autoplay"></iframe>
+            </div>
+        </div>
     </div>
 
-    <div id="status">لم يتم تحميل البيانات بعد.</div>
-    <div id="list"></div>
-
-    <div class="share-box">
-      <p>شارك الأجر بمشاركة التطبيق</p>
-      <button id="shareBtn" class="btn">مشاركة</button>
+    <!-- RECITERS -->
+    <div class="page" id="pg-reciters">
+        <div class="pg-h"><button class="bk" onclick="go('home')"><i class="fas fa-arrow-right"></i></button><h2>القرّاء</h2></div>
+        <div class="s-wrap"><div class="s-box"><i class="fas fa-search"></i><input type="text" placeholder="ابحث عن قارئ..." id="recSearch" oninput="filterRec(this.value)"></div></div>
+        <div class="chips" id="riwayatChips">
+            <button class="chip on" data-r="all" onclick="filterRiw('all',this)">الكل</button>
+            <button class="chip" data-r="hafs" onclick="filterRiw('hafs',this)">حفص عن عاصم</button>
+            <button class="chip" data-r="warsh" onclick="filterRiw('warsh',this)">ورش عن نافع</button>
+        </div>
+        <div class="stats">
+            <div class="stat"><div class="stat-n" id="statRec">0</div><div class="stat-l">قارئ</div></div>
+            <div class="stat"><div class="stat-n" id="statRiw">0</div><div class="stat-l">رواية</div></div>
+            <div class="stat"><div class="stat-n">114</div><div class="stat-l">سورة</div></div>
+        </div>
+        <div class="sec"><div class="r-list" id="allRecList"></div></div>
     </div>
 
-    <footer>
-      <div class="dua">
-      اللهم اجعل هذا العمل صدقة جارية عني وعن عائلتي وأهلي وأهل عائلتي وعن موتانا وموتى المسلمين وعن كل من ساهم وشارك في التطبيق
-      </div>
-      <div class="copyright">جميع الحقوق محفوظة © <strong>NajdQuran</strong></div>
-    </footer>
-  </div>
+    <!-- RECITER DETAIL -->
+    <div class="page" id="pg-rec-detail">
+        <div class="rd-top">
+            <div class="rd-top-pattern"></div>
+            <button class="rd-back" onclick="go('reciters')"><i class="fas fa-arrow-right"></i></button>
+            <button class="rd-share" onclick="shareRec()"><i class="fas fa-share-alt"></i></button>
+            <div class="rd-av"><i class="fas fa-microphone-alt"></i></div>
+            <h2 id="rdName">-</h2>
+            <p id="rdInfo">-</p>
+            <div class="rd-btns">
+                <button class="rd-b primary" onclick="playAll()"><i class="fas fa-play"></i> تشغيل الكل</button>
+                <button class="rd-b" onclick="toggleFavCur()"><i class="fas fa-heart" id="rdFavI"></i> المفضلة</button>            </div>
+        </div>
+        <div class="chips" id="rdChips"></div>
+        <div class="sec"><div class="s-list" id="rdSurahs"></div></div>
+    </div>
 
-  <script src="script.js"></script>
+    <!-- FAVORITES -->
+    <div class="page" id="pg-favorites">
+        <div class="pg-h"><button class="bk" onclick="go('home')"><i class="fas fa-arrow-right"></i></button><h2>المفضلة</h2></div>
+        <div class="sec"><div class="r-list" id="favList"></div></div>
+    </div>
+
+    <!-- PRAYER -->
+    <div class="page" id="pg-prayer">
+        <div class="pg-h"><button class="bk" onclick="go('home')"><i class="fas fa-arrow-right"></i></button><h2>مواقيت الصلاة</h2></div>
+        <div class="sec">
+            <div class="pr-card">
+                <div class="pr-row"><div class="pn"><i class="fas fa-sun"></i><span>الفجر</span></div><span class="pt" id="fajrT">--:--</span></div>
+                <div class="pr-row"><div class="pn"><i class="fas fa-cloud-sun"></i><span>الظهر</span></div><span class="pt" id="dhuhrT">--:--</span></div>
+                <div class="pr-row"><div class="pn"><i class="fas fa-sun"></i><span>العصر</span></div><span class="pt" id="asrT">--:--</span></div>
+                <div class="pr-row"><div class="pn"><i class="fas fa-cloud-moon"></i><span>المغرب</span></div><span class="pt" id="maghribT">--:--</span></div>
+                <div class="pr-row"><div class="pn"><i class="fas fa-moon"></i><span>العشاء</span></div><span class="pt" id="ishaT">--:--</span></div>
+            </div>
+            <div style="text-align:center;margin-top:12px;">
+                <button class="s-go" onclick="getPrayers()" style="padding:9px 24px;"><i class="fas fa-location-dot"></i> تحديد الموقع</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADHKAR -->
+    <div class="page" id="pg-adhkar">
+        <div class="pg-h"><button class="bk" onclick="go('home')"><i class="fas fa-arrow-right"></i></button><h2>الأذكار</h2></div>
+        <div class="cat-tabs" id="adhkarCats">
+            <button class="cat-tab on" onclick="showAdhkarCat('morning',this)">أذكار الصباح</button>
+            <button class="cat-tab" onclick="showAdhkarCat('evening',this)">أذكار المساء</button>
+            <button class="cat-tab" onclick="showAdhkarCat('sleep',this)">أذكار النوم</button>
+            <button class="cat-tab" onclick="showAdhkarCat('tasbih',this)">التسبيحات</button>
+            <button class="cat-tab" onclick="showAdhkarCat('after',this)">أذكار بعد الصلاة</button>
+            <button class="cat-tab" onclick="showAdhkarCat('misc',this)">أذكار متنوعة</button>
+        </div>
+        <div class="sec" id="adhkarContent"></div>
+    </div>
+
+    <!-- DUA -->
+    <div class="page" id="pg-dua">
+        <div class="pg-h"><button class="bk" onclick="go('home')"><i class="fas fa-arrow-right"></i></button><h2>الأدعية</h2></div>
+        <div class="cat-tabs" id="duaCats">
+            <button class="cat-tab on" onclick="showDuaCat('quran',this)">أدعية قرآنية</button>
+            <button class="cat-tab" onclick="showDuaCat('prophet',this)">أدعية نبوية</button>
+            <button class="cat-tab" onclick="showDuaCat('daily',this)">أدعية يومية</button>            <button class="cat-tab" onclick="showDuaCat('distress',this)">أدعية الكرب</button>
+            <button class="cat-tab" onclick="showDuaCat('travel',this)">أدعية السفر</button>
+            <button class="cat-tab" onclick="showDuaCat('special',this)">أدعية خاصة</button>
+        </div>
+        <div class="sec" id="duaContent"></div>
+    </div>
+
+    <!-- KHATMA -->
+    <div class="page" id="pg-khatma">
+        <div class="pg-h"><button class="bk" onclick="go('home')"><i class="fas fa-arrow-right"></i></button><h2>ختمة القرآن</h2></div>
+        <div class="sec">
+            <div class="k-prog">
+                <h3>تقدم الختمة</h3><p>اختر السور التي أتممت قراءتها</p>
+                <div class="k-row"><span id="kPct">0%</span><span id="kCnt">0 / 114</span></div>
+                <div class="kbar"><div class="kbar-fill" id="kBar" style="width:0%"></div></div>
+            </div>
+            <div class="k-grid" id="kGrid"></div>
+        </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="pg-settings">
+        <div class="pg-h"><button class="bk" onclick="go('home')"><i class="fas fa-arrow-right"></i></button><h2>الإعدادات</h2></div>
+        <div class="sec">
+            <div class="s-group">
+                <div class="s-gt">المظهر</div>
+                <div class="s-item" onclick="toggleTheme()">
+                    <div class="s-item-r"><div class="s-ic" style="background:rgba(212,168,67,.08);color:var(--gold);"><i class="fas fa-moon"></i></div><div class="s-item-text"><h4>الوضع الليلي</h4><span>تبديل بين الفاتح والداكن</span></div></div>
+                    <div class="tog" id="darkTog"></div>
+                </div>
+            </div>
+
+            <div class="s-group"><div class="s-gt">الخلفية الإسلامية</div></div>
+            <div class="t-grid" id="bgGrid">
+                <div class="t-opt on" onclick="chgBg('arabesque')" data-bg="arabesque">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-emerald"><div class="t-prev-bg pattern-arabesque" style="opacity:0.5;position:absolute;inset:0;"></div><i class="fas fa-star-and-crescent"></i></div>
+                    <span>أرابيسك</span>
+                </div>
+                <div class="t-opt" onclick="chgBg('zellige')" data-bg="zellige">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-gold"><div class="t-prev-bg pattern-zellige" style="opacity:0.5;position:absolute;inset:0;"></div><i class="fas fa-shapes"></i></div>
+                    <span>زليج مغربي</span>
+                </div>
+                <div class="t-opt" onclick="chgBg('ottoman')" data-bg="ottoman">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-royal"><div class="t-prev-bg pattern-ottoman" style="opacity:0.5;position:absolute;inset:0;"></div><i class="fas fa-mosque"></i></div>
+                    <span>عثماني</span>
+                </div>
+                <div class="t-opt" onclick="chgBg('eslimi')" data-bg="eslimi">                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-ocean"><div class="t-prev-bg pattern-eslimi" style="opacity:0.5;position:absolute;inset:0;"></div><i class="fas fa-leaf"></i></div>
+                    <span>إسلامي فارسي</span>
+                </div>
+                <div class="t-opt" onclick="chgBg('andalusian')" data-bg="andalusian">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-sunset"><div class="t-prev-bg pattern-andalusian" style="opacity:0.5;position:absolute;inset:0;"></div><i class="fas fa-archway"></i></div>
+                    <span>أندلسي</span>
+                </div>
+                <div class="t-opt" onclick="chgBg('mamluk')" data-bg="mamluk">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-forest"><div class="t-prev-bg pattern-mamluk" style="opacity:0.5;position:absolute;inset:0;"></div><i class="fas fa-gem"></i></div>
+                    <span>مملوكي</span>
+                </div>
+            </div>
+
+            <div class="s-group"><div class="s-gt">لون التطبيق</div></div>
+            <div class="t-grid" id="colorGrid">
+                <div class="t-opt on" onclick="chgColor('emerald')" data-color="emerald">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-emerald"><i class="fas fa-palette"></i></div>
+                    <span>زمردي</span>
+                </div>
+                <div class="t-opt" onclick="chgColor('gold')" data-color="gold">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-gold"><i class="fas fa-palette"></i></div>
+                    <span>ذهبي</span>
+                </div>
+                <div class="t-opt" onclick="chgColor('royal')" data-color="royal">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-royal"><i class="fas fa-palette"></i></div>
+                    <span>ملكي</span>
+                </div>
+                <div class="t-opt" onclick="chgColor('ocean')" data-color="ocean">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-ocean"><i class="fas fa-palette"></i></div>
+                    <span>محيطي</span>
+                </div>
+                <div class="t-opt" onclick="chgColor('sunset')" data-color="sunset">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-sunset"><i class="fas fa-palette"></i></div>
+                    <span>غروب</span>
+                </div>
+                <div class="t-opt" onclick="chgColor('forest')" data-color="forest">
+                    <div class="t-check"><i class="fas fa-check"></i></div>
+                    <div class="t-prev tp-forest"><i class="fas fa-palette"></i></div>
+                    <span>غابي</span>
+                </div>
+            </div>
+            <div class="s-group">
+                <div class="s-gt">التشغيل</div>
+                <div class="s-item" onclick="togAuto()">
+                    <div class="s-item-r"><div class="s-ic" style="background:rgba(13,92,58,.08);color:var(--primary);"><i class="fas fa-forward"></i></div><div class="s-item-text"><h4>تشغيل تلقائي</h4><span>تشغيل السورة التالية تلقائياً</span></div></div>
+                    <div class="tog on" id="autoTog"></div>
+                </div>
+            </div>
+
+            <div class="support-card">
+                <div class="support-pattern"></div>
+                <div class="support-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                <h3>دعمكم لتطوير التطبيق</h3>
+                <div class="support-verse">﴿ وَمَا تُقَدِّمُوا لِأَنفُسِكُم مِّنْ خَيْرٍ تَجِدُوهُ عِندَ اللَّهِ ﴾</div>
+                <p class="support-text">هذا التطبيق وقفٌ خالص لوجه الله تعالى.<br>شاركه مع من تحب، وادعُ لنا بظهر الغيب ❤️</p>
+                <button class="support-btn" onclick="shareApp()"><i class="fas fa-share-nodes"></i><span>شارك التطبيق</span></button>
+            </div>
+
+            <div class="s-group">
+                <div class="s-gt">حول التطبيق</div>
+                <div class="s-item">
+                    <div class="s-item-r"><div class="s-ic" style="background:rgba(13,92,58,.08);color:var(--primary);"><i class="fas fa-info-circle"></i></div><div class="s-item-text"><h4>Najd Quran</h4><span>الإصدار 3.0.0</span></div></div>
+                </div>
+                <div class="s-item" onclick="toast('شكراً لتقييمك! 🌟')">
+                    <div class="s-item-r"><div class="s-ic" style="background:rgba(212,168,67,.08);color:var(--gold);"><i class="fas fa-star"></i></div><div class="s-item-text"><h4>تقييم التطبيق</h4><span>شاركنا رأيك</span></div></div>
+                    <div class="s-item-l"><i class="fas fa-chevron-left"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SURAH PLAY -->
+    <div class="page" id="pg-sp">
+        <div class="sp-top">
+            <div class="sp-top-pattern"></div>
+            <button class="rd-back" onclick="go('rec-detail')"><i class="fas fa-arrow-right"></i></button>
+            <h2 id="spName">سورة الفاتحة</h2>
+            <p id="spRec">القارئ</p>
+            <div class="sp-art"><i class="fas fa-quran"></i></div>
+        </div>
+        <div class="prog"><div class="prog-bar" onclick="seekIt(event)"><div class="prog-fill" id="spProg"></div></div></div>
+        <div class="prog-times"><span id="spCur">0:00</span><span id="spDur">0:00</span></div>
+        <div class="sp-ctrls">
+            <button class="sc-btn" id="spRepBtn" onclick="togRepeat()"><i class="fas fa-repeat"></i></button>
+            <button class="sc-btn" onclick="prevS()"><i class="fas fa-backward"></i></button>
+            <button class="sc-btn play" id="spPlayBtn" onclick="togPlay()"><i class="fas fa-play"></i></button>
+            <button class="sc-btn" onclick="nextS()"><i class="fas fa-forward"></i></button>
+            <button class="sc-btn" id="spAutoBtn" onclick="togAutoNext()"><i class="fas fa-list"></i></button>
+        </div>
+        <div class="spd"><span>السرعة:</span>
+            <button class="spd-btn" onclick="setSpd(.5)">0.5x</button>            <button class="spd-btn" onclick="setSpd(.75)">0.75x</button>
+            <button class="spd-btn on" onclick="setSpd(1)">1x</button>
+            <button class="spd-btn" onclick="setSpd(1.25)">1.25x</button>
+            <button class="spd-btn" onclick="setSpd(1.5)">1.5x</button>
+            <button class="spd-btn" onclick="setSpd(2)">2x</button>
+        </div>
+        <div class="vol"><i class="fas fa-volume-low"></i><div class="vol-bar" onclick="setVolIt(event)"><div class="vol-fill" id="volFill" style="width:80%"></div></div><i class="fas fa-volume-high"></i></div>
+        <div class="sec"><h3 style="font-size:14px;font-weight:700;margin-bottom:8px;">السور</h3><div class="s-list" id="spList"></div></div>
+    </div>
+</div>
+
+<!-- Mini Player -->
+<div class="player" id="miniP">
+    <div class="player-ornament"></div>
+    <div class="pl-prog" onclick="seekIt(event)"><div class="pl-prog-fill" id="miniProg"></div></div>
+    <div class="pl-inner" onclick="openExp()">
+        <div class="pl-info"><h4 id="miniTitle">اختر سورة للاستماع</h4><span id="miniSub">Najd Quran</span></div>
+        <div class="pl-btns">
+            <button class="p-btn" onclick="prevS();event.stopPropagation();"><i class="fas fa-backward"></i></button>
+            <button class="p-btn play" id="miniPlay" onclick="togPlay();event.stopPropagation();"><i class="fas fa-play"></i></button>
+            <button class="p-btn" onclick="nextS();event.stopPropagation();"><i class="fas fa-forward"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- Expanded Player -->
+<div class="exp" id="expP">
+    <div class="ep-head"><button onclick="closeExp()"><i class="fas fa-chevron-down"></i></button><h3>مشغل القرآن</h3><button><i class="fas fa-ellipsis-v"></i></button></div>
+    <div class="ep-art"><div class="ep-art-box" id="epArt"><div class="ep-art-pattern"></div><i class="fas fa-quran"></i></div></div>
+    <div class="ep-info"><h2 id="epTitle">اختر سورة</h2><p id="epSub">القارئ</p></div>
+    <div class="prog"><div class="prog-bar" onclick="seekIt(event)"><div class="prog-fill" id="epProg"></div></div></div>
+    <div class="prog-times"><span id="epCur">0:00</span><span id="epDur">0:00</span></div>
+    <div class="ep-ctrls">
+        <button class="ec-btn" id="epShuf" onclick="togShuffle()"><i class="fas fa-shuffle"></i></button>
+        <button class="ec-btn" onclick="prevS()"><i class="fas fa-backward"></i></button>
+        <button class="ec-play" id="epPlayBtn" onclick="togPlay()"><i class="fas fa-play"></i></button>
+        <button class="ec-btn" onclick="nextS()"><i class="fas fa-forward"></i></button>
+        <button class="ec-btn" id="epRep" onclick="togRepeat()"><i class="fas fa-repeat"></i></button>
+    </div>
+    <div class="vol"><i class="fas fa-volume-low"></i><div class="vol-bar" onclick="setVolIt(event)"><div class="vol-fill" id="epVolFill" style="width:80%"></div></div><i class="fas fa-volume-high"></i></div>
+    <div class="spd"><span>السرعة:</span><button class="spd-btn" onclick="setSpd(.5)">0.5x</button><button class="spd-btn on" onclick="setSpd(1)">1x</button><button class="spd-btn" onclick="setSpd(1.5)">1.5x</button><button class="spd-btn" onclick="setSpd(2)">2x</button></div>
+    <div class="ep-extra">
+        <button class="ep-x" onclick="dlS()"><i class="fas fa-download"></i><span>تحميل</span></button>
+        <button class="ep-x" onclick="shareS()"><i class="fas fa-share"></i><span>مشاركة</span></button>
+        <button class="ep-x" id="epAutoBtn" onclick="togAutoNext()"><i class="fas fa-list"></i><span>تتابع</span></button>
+    </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+<audio id="audio" preload="auto"></audio>
+<script src="script.js"></script>
 </body>
-</html>
+                                                                                                                              </html>
